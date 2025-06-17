@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  server:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/csv-processor
+      - shared_temp:/tmp/shared
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      DB_HOSTNAME: db
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+    tty: true
+    stdin_open: true
+
+
+volumes:
+  shared_temp:

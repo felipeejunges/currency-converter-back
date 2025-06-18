@@ -47,7 +47,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotaterb', '~> 4.14'
+  gem 'annotaterb', '~> 4.16'
 end
 
 group :test do

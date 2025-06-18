@@ -11,21 +11,46 @@ services:
     ports:
       - "6543:5432"
 
+  redis:
+    image: 'redis:7.0.8'
+    command: redis-server
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis:/data'
+
+  sidekiq:
+    depends_on:
+      - 'db'
+      - 'redis'
+    build: .
+    command: bundle exec sidekiq -C ./config/sidekiq.yaml
+    volumes:
+      - '.:/currency-converter-back'
+    environment:
+      - REDIS_URL_SIDEKIQ=redis://redis:6379/1
+      - DB_HOSTNAME=db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+
   server:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - .:/stock-processor
+      - '.:/currency-converter-back'
     ports:
       - "3000:3000"
     depends_on:
       - db
+      - redis
     environment:
       DB_HOSTNAME: db
       DB_USERNAME: postgres
       DB_PASSWORD: password
+      REDIS_URL_SIDEKIQ: redis://redis:6379/1
     tty: true
     stdin_open: true
 
 volumes:
+  redis:
   postgres:

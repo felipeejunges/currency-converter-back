@@ -92,6 +92,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.5)
     database_cleaner (2.1.0)
       database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.2.1)
@@ -143,6 +144,10 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.2.0)
+    httparty (0.23.1)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     io-console (0.8.0)
@@ -182,6 +187,8 @@ GEM
     mini_mime (1.1.5)
     minitest (5.25.5)
     msgpack (1.8.0)
+    multi_xml (0.7.2)
+      bigdecimal (~> 3.1)
     net-imap (0.5.8)
       date
       net-protocol
@@ -294,6 +301,12 @@ GEM
     rspec-support (3.13.4)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
+    rswag-api (2.16.0)
+      activesupport (>= 5.2, < 8.1)
+      railties (>= 5.2, < 8.1)
+    rswag-ui (2.16.0)
+      actionpack (>= 5.2, < 8.1)
+      railties (>= 5.2, < 8.1)
     rubocop (1.76.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -411,6 +424,7 @@ DEPENDENCIES
   devise-jwt
   factory_bot_rails
   faker (~> 3.2)
+  httparty
   jbuilder
   kamal
   pagy (~> 9.3)
@@ -421,6 +435,8 @@ DEPENDENCIES
   redis
   rspec-rails
   rspec_junit_formatter
+  rswag-api
+  rswag-ui
   rubocop-rails-omakase
   shoulda-matchers (~> 5.3)
   sidekiq (~> 7.3)

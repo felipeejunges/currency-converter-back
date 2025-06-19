@@ -29,11 +29,8 @@ services:
       - '.:/currency-converter-back'
       - .:/tmp/sidekiq'
       - shared_temp:/tmp/shared
-    environment:
-      REDIS_URL_SIDEKIQ: redis://redis:6379/1
-      DB_HOSTNAME: db
-      DB_USERNAME: postgres
-      DB_PASSWORD: password
+    env_file:
+      - .env
 
   server:
     build: .
@@ -46,11 +43,8 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      DB_HOSTNAME: db
-      DB_USERNAME: postgres
-      DB_PASSWORD: password
-      REDIS_URL_SIDEKIQ: redis://redis:6379/1
+    env_file:
+      - .env
     tty: true
     stdin_open: true
 

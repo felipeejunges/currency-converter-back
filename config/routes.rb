@@ -11,6 +11,14 @@ Rails.application.routes.draw do
         post 'login', to: 'auth#create'
         delete 'logout', to: 'auth#destroy'
       end
+
+      resources :currencies, only: [:index] do
+        collection do
+          resources :conversion, only: [:create]
+        end
+      end
+
+      get 'transactions', to: 'conversion#index'
     end
   end
 end

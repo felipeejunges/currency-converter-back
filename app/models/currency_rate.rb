@@ -14,10 +14,9 @@
 #
 # Indexes
 #
-#  index_currency_rates_on_fetched_at            (fetched_at)
-#  index_currency_rates_on_from_and_to_currency  (from_currency_id,to_currency_id) UNIQUE
-#  index_currency_rates_on_from_currency_id      (from_currency_id)
-#  index_currency_rates_on_to_currency_id        (to_currency_id)
+#  index_currency_rates_on_fetched_at        (fetched_at)
+#  index_currency_rates_on_from_currency_id  (from_currency_id)
+#  index_currency_rates_on_to_currency_id    (to_currency_id)
 #
 # Foreign Keys
 #
@@ -27,11 +26,10 @@
 class CurrencyRate < ApplicationRecord
   belongs_to :from_currency, class_name: 'Currency'
   belongs_to :to_currency, class_name: 'Currency'
-  has_many :currency_conversions, dependent: :destroy
+  has_many :currency_conversions, dependent: :destroy, class_name: 'Currency::Conversion'
 
   validates :rate, presence: true, numericality: { greater_than: 0 }
   validates :fetched_at, presence: true
-  validates :from_currency_id, uniqueness: { scope: :to_currency_id }
 
   scope :recent, -> { order(fetched_at: :desc) }
   scope :today, -> { where('fetched_at >= ?', Time.current.beginning_of_day) }

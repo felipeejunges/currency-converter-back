@@ -104,7 +104,7 @@ RSpec.configure do |config|
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
 
-  onfig.before(:suite) do
+  config.before(:suite) do
     DatabaseCleaner[:active_record].strategy = :truncation
     DatabaseCleaner.clean
   end

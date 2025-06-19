@@ -9,7 +9,6 @@ class CreateCurrencyRates < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :currency_rates, [:from_currency_id, :to_currency_id], unique: true, name: 'index_currency_rates_on_from_and_to_currency'
     add_index :currency_rates, :fetched_at
   end
 end 

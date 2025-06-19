@@ -1,7 +1,33 @@
+# frozen_string_literal: true
+
+# == Schema Information
+#
+# Table name: currency_conversions
+#
+#  id               :bigint           not null, primary key
+#  force_refresh    :boolean          default(FALSE)
+#  from_value       :decimal(20, 10)  not null
+#  to_value         :decimal(20, 10)  not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  currency_rate_id :bigint           not null
+#  user_id          :bigint           not null
+#
+# Indexes
+#
+#  index_currency_conversions_on_currency_rate_id        (currency_rate_id)
+#  index_currency_conversions_on_user_id                 (user_id)
+#  index_currency_conversions_on_user_id_and_created_at  (user_id,created_at)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (currency_rate_id => currency_rates.id)
+#  fk_rails_...  (user_id => users.id)
+#
 module Currency
   class Conversion < ApplicationRecord
     self.table_name = 'currency_conversions'
-    
+
     belongs_to :currency_rate
     belongs_to :user
     delegate :from_currency, :to_currency, to: :currency_rate
@@ -41,4 +67,4 @@ module Currency
       )
     end
   end
-end 
+end

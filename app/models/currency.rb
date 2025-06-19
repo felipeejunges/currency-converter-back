@@ -1,3 +1,21 @@
+# frozen_string_literal: true
+
+# == Schema Information
+#
+# Table name: currencies
+#
+#  id            :bigint           not null, primary key
+#  code          :string           not null
+#  name          :string           not null
+#  symbol        :string           not null
+#  symbol_native :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+# Indexes
+#
+#  index_currencies_on_code  (code) UNIQUE
+#
 class Currency < ApplicationRecord
   has_many :from_currency_rates, class_name: 'CurrencyRate', foreign_key: 'from_currency_id', dependent: :destroy
   has_many :to_currency_rates, class_name: 'CurrencyRate', foreign_key: 'to_currency_id', dependent: :destroy
@@ -24,4 +42,4 @@ class Currency < ApplicationRecord
   def latest_rate_from(source_currency)
     from_currency_rates.where(from_currency: source_currency).order(fetched_at: :desc).first
   end
-end 
+end

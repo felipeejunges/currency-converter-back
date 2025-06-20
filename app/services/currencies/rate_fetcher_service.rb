@@ -38,13 +38,13 @@ module Currencies
       raise RateFetchError, 'Currency API key not configured' unless api_key
 
       self.class.get('/latest', {
-                        query: {
-                          apikey: api_key,
-                          currencies: currencies,
-                          base_currency: from_currency.code
-                        },
-                        timeout: 10
-                      })
+                       query: {
+                         apikey: api_key,
+                         currencies: currencies,
+                         base_currency: from_currency.code
+                       },
+                       timeout: 10
+                     })
     end
 
     def parse_and_save_rates(response_data)

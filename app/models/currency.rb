@@ -34,12 +34,4 @@ class Currency < ApplicationRecord
   def supported?
     %w[BRL USD EUR JPY].include?(code)
   end
-
-  def latest_rate_to(target_currency)
-    to_currency_rates.where(to_currency: target_currency).order(fetched_at: :desc).first
-  end
-
-  def latest_rate_from(source_currency)
-    from_currency_rates.where(from_currency: source_currency).order(fetched_at: :desc).first
-  end
 end

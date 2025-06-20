@@ -135,6 +135,32 @@ RSpec.describe Currencies::ConversionService do
       end
     end
 
+    context 'when currencies are missing' do
+      it 'raises ConversionError when from_currency is nil' do
+        service = described_class.new(user: user, from_currency: nil, to_currency: brl_currency, from_value: from_value)
+
+        expect {
+          service.call
+        }.to raise_error(Currencies::ConversionService::ConversionError, 'Both from_currency and to_currency are required')
+      end
+
+      it 'raises ConversionError when to_currency is nil' do
+        service = described_class.new(user: user, from_currency: usd_currency, to_currency: nil, from_value: from_value)
+
+        expect {
+          service.call
+        }.to raise_error(Currencies::ConversionService::ConversionError, 'Both from_currency and to_currency are required')
+      end
+
+      it 'raises ConversionError when both currencies are nil' do
+        service = described_class.new(user: user, from_currency: nil, to_currency: nil, from_value: from_value)
+
+        expect {
+          service.call
+        }.to raise_error(Currencies::ConversionService::ConversionError, 'Both from_currency and to_currency are required')
+      end
+    end
+
     context 'when rate is zero or negative' do
       before do
         allow_any_instance_of(Currencies::RateFetcherService).to receive(:call) do

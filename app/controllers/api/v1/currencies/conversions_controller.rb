@@ -27,7 +27,11 @@ module Api
         private
 
         def conversion_params
-          params.permit(:from_currency, :to_currency, :from_value, :force_refresh)
+          if params[:conversion].present?
+            params.require(:conversion).permit(:from_currency, :to_currency, :from_value, :force_refresh)
+          else
+            params.permit(:from_currency, :to_currency, :from_value, :force_refresh)
+          end
         end
 
         def conversion_service

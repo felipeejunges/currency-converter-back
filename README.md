@@ -357,13 +357,11 @@ All currency conversions are logged with details including:
 - User ID
 - Force refresh flag
 
-## Contributing
+## Code Coverage
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+![Code Coverage](https://github.com/user-attachments/assets/1d12ba1b-206b-445b-8cfc-db1114a4a7ce)
+
+The project maintains comprehensive test coverage across all components including models, services, controllers, and background jobs.
 
 ## License
 

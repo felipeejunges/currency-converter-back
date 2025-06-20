@@ -3,7 +3,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 require 'sidekiq/testing'
-ENV['RAILS_ENV'] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
@@ -79,6 +79,9 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner[:active_record].clean
   end
+
+  # Include Devise test helpers
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and

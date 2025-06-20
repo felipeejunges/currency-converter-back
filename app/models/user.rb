@@ -12,6 +12,8 @@
 #  reset_password_token   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  first_name             :string
+#  last_name              :string
 #
 # Indexes
 #
@@ -29,4 +31,10 @@ class User < ApplicationRecord
   has_many :currency_conversions, dependent: :destroy, class_name: 'Currency::Conversion'
 
   validates :email, presence: true, uniqueness: true
+  validates :first_name, presence: true, length: { minimum: 2, maximum: 50 }
+  validates :last_name, presence: true, length: { minimum: 2, maximum: 50 }
+
+  def full_name
+    "#{first_name} #{last_name}".squeeze(' ').strip
+  end
 end

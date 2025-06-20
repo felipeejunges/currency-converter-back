@@ -51,9 +51,9 @@ module Currencies
       validate_supported_currencies!
 
       if force_refresh
-        fetch_live_rate
+        fetch_live_rates
       else
-        fetch_cached_rate || fetch_live_rate
+        fetch_cached_rate || fetch_live_rates
       end
     end
 
@@ -61,11 +61,12 @@ module Currencies
       CurrencyRate.latest_for(from_currency, to_currency)
     end
 
-    def fetch_live_rate
+    def fetch_live_rates
       Currencies::RateFetcherService.new(
-        from_currency: from_currency,
-        to_currency: to_currency
+        from_currency: from_currency
       ).call
+
+      CurrencyRate.latest_for(from_currency, to_currency)
     end
 
     def calculate_conversion(value, rate)

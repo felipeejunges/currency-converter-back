@@ -40,18 +40,6 @@ class CurrencyRate < ApplicationRecord
       .first
   end
 
-  def self.create_or_update_rate(from_currency, to_currency, rate)
-    currency_rate = find_or_initialize_by(
-      from_currency: from_currency,
-      to_currency: to_currency
-    )
-
-    currency_rate.rate = rate
-    currency_rate.fetched_at = Time.current
-    currency_rate.save!
-    currency_rate
-  end
-
   def inverse_rate
     return nil if rate.zero?
 

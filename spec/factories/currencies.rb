@@ -16,7 +16,7 @@
 #
 #  index_currencies_on_code  (code) UNIQUE
 #
-FactoryBot.define do # rubocop:disable Metrics/BlockLength
+FactoryBot.define do
   factory :currency do # rubocop:disable Metrics/BlockLength
     sequence(:code) { |n| "CUR#{n}" }
     sequence(:name) { |n| "Currency #{n}" }

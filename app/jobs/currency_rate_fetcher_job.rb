@@ -5,14 +5,11 @@ class CurrencyRateFetcherJob < ApplicationJob
 
   def perform
     supported_currencies = Currency.supported.to_a
-    combinations = generate_currency_combinations(supported_currencies)
 
-    Rails.logger.info("Starting to fetch rates for #{combinations.length} currency combinations")
+    Rails.logger.info("Starting to fetch rates for #{supported_currencies.length} base currencies")
 
-    combinations.each do |from_currency, to_currency|
-      next if from_currency == to_currency
-
-      fetch_rate(from_currency, to_currency)
+    supported_currencies.each do |from_currency|
+      fetch_rates_for_currency(from_currency)
     end
 
     Rails.logger.info('Completed currency rate fetching job')
@@ -20,15 +17,11 @@ class CurrencyRateFetcherJob < ApplicationJob
 
   private
 
-  def fetch_rate(from_currency, to_currency)
-    Currencies::RateFetcherService.new(from_currency: from_currency, to_currency: to_currency).call
+  def fetch_rates_for_currency(from_currency)
+    Currencies::RateFetcherService.new(from_currency: from_currency).call
 
-    Rails.logger.info("Successfully fetched rate for #{from_currency.code} -> #{to_currency.code}")
+    Rails.logger.info("Successfully fetched rates for #{from_currency.code}")
   rescue StandardError => e
-    Rails.logger.error("Failed to fetch rate for #{from_currency.code} -> #{to_currency.code}: #{e.message}")
-  end
-
-  def generate_currency_combinations(currencies)
-    currencies.product(currencies).reject { |from, to| from == to }
+    Rails.logger.error("Failed to fetch rates for #{from_currency.code}: #{e.message}")
   end
 end

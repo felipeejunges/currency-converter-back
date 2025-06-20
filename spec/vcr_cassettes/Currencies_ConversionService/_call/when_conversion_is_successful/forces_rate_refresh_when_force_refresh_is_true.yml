@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.currencyapi.com/v3/latest?apikey=<CURRENCY_API_KEY>&currencies=USD,BRL
+    uri: https://api.currencyapi.com/v3/latest?apikey=<CURRENCY_API_KEY>&base_currency=USD&currencies=BRL
     body:
       encoding: US-ASCII
       string: ''
@@ -19,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 19 Jun 2025 23:56:10 GMT
+      - Fri, 20 Jun 2025 17:59:47 GMT
       Content-Type:
       - application/json; charset=UTF-8
       Transfer-Encoding:
@@ -33,7 +33,7 @@ http_interactions:
       Charset:
       - utf-8
       X-Execution-Time:
-      - '10.54'
+      - '10.23'
       X-Cost:
       - '1'
       Cache-Control:
@@ -41,11 +41,11 @@ http_interactions:
       X-Ratelimit-Limit-Quota-Month:
       - '300'
       X-Ratelimit-Remaining-Quota-Month:
-      - '292'
+      - '255'
       X-Forwarded-Port:
       - '443'
       X-Request-Id:
-      - de1196e2-2e27-4a12-bee5-ae099051ab15
+      - 781db372-256f-4a49-843c-ddbfb06c9c83
       Access-Control-Allow-Origin:
       - "*"
       X-Ratelimit-Limit-Quota-Minute:
@@ -55,13 +55,13 @@ http_interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Report-To:
-      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=VOkXnT6XRUn3fG%2BXaDFSioKS5VfalTWiYDnZR6CG4YPdlwj2jfuKqZKqGyoWmTABhtdTie8qwkvGMu5zgDjI3u4eGu5303zYgIC6D3cJSFeOpig%3D"}]}'
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=GoVy3bFOVv4BMKwKpve40qT0N7TxkEpNmXdLdgflmsAjBsTCj%2BjE4LiFodfQLrgYuTh1Ils4YkN2mXr%2FOYCnsQ4NTpj8CdvzlyhrLackxLr5Vdw%3D"}]}'
       Cf-Ray:
-      - 9526f6221f3ef1e2-GRU
+      - 952d2976fdc2e017-GIG
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"meta":{"last_updated_at":"2025-06-18T23:59:59Z"},"data":{"BRL":{"code":"BRL","value":5.4850509232},"USD":{"code":"USD","value":1}}}'
-  recorded_at: Thu, 19 Jun 2025 23:56:07 GMT
+      string: '{"meta":{"last_updated_at":"2025-06-19T23:59:59Z"},"data":{"BRL":{"code":"BRL","value":5.4992907978}}}'
+  recorded_at: Fri, 20 Jun 2025 17:59:48 GMT
 recorded_with: VCR 6.3.1

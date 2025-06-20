@@ -72,33 +72,6 @@ RSpec.describe CurrencyRate, type: :model do
     end
   end
 
-  describe '.create_or_update_rate' do
-    let(:from_currency) { create(:currency, :usd) }
-    let(:to_currency) { create(:currency, :brl) }
-    let(:rate) { 5.25 }
-
-    context 'when rate does not exist' do
-      it 'creates a new rate' do
-        expect {
-          CurrencyRate.create_or_update_rate(from_currency, to_currency, rate)
-        }.to change(CurrencyRate, :count).by(1)
-      end
-    end
-
-    context 'when rate already exists' do
-      let!(:existing_rate) { create(:currency_rate, from_currency: from_currency, to_currency: to_currency, rate: 4.0) }
-
-      it 'updates the existing rate' do
-        expect {
-          CurrencyRate.create_or_update_rate(from_currency, to_currency, rate)
-        }.not_to change(CurrencyRate, :count)
-
-        existing_rate.reload
-        expect(existing_rate.rate).to eq(rate)
-      end
-    end
-  end
-
   describe '#inverse_rate' do
     let(:currency_rate) { build(:currency_rate, rate: 5.0) }
 

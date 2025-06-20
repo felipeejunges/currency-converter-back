@@ -57,9 +57,9 @@ RSpec.describe Currencies::ConversionService do
         expect_any_instance_of(Currencies::RateFetcherService).to receive(:call).and_call_original
 
         result = service.call
-        expect(result.currency_rate.id).to eq(existing_rate.id)
+        expect(result.currency_rate.id).not_to eq(existing_rate.id)
         expect(result.currency_rate.rate).not_to eq(4.0)
-        expect(result.currency_rate.updated_at).to be > existing_rate.updated_at
+        expect(result.currency_rate.fetched_at).to be > existing_rate.fetched_at
       end
 
       it 'fetches new rate when no existing rate is available' do

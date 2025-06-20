@@ -13,7 +13,7 @@ class CurrencyRateFetcherJob < ApplicationJob
       next if from_currency == to_currency
 
       begin
-        Currency::RateFetcherService.new(
+        Currencies::RateFetcherService.new(
           from_currency: from_currency,
           to_currency: to_currency
         ).call

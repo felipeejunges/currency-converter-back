@@ -40,22 +40,16 @@ module Currencies
     end
 
     def validate_supported_currencies!
-      unless from_currency.supported?
-        raise ConversionError, "Unsupported currency: #{from_currency.code}"
-      end
+      raise ConversionError, "Unsupported currency: #{from_currency.code}" unless from_currency.supported?
 
-      unless to_currency.supported?
-        raise ConversionError, "Unsupported currency: #{to_currency.code}"
-      end
+      raise ConversionError, "Unsupported currency: #{to_currency.code}" unless to_currency.supported?
 
-      if from_currency == to_currency
-        raise ConversionError, 'Cannot convert to the same currency'
-      end
+      raise ConversionError, 'Cannot convert to the same currency' if from_currency == to_currency
     end
 
     def fetch_currency_rate
       validate_supported_currencies!
-      
+
       if force_refresh
         fetch_live_rate
       else

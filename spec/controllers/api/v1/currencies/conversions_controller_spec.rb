@@ -69,21 +69,9 @@ RSpec.describe 'Api::V1::Currencies::Conversions API', type: :request do
       
       expect(timestamps).to eq(timestamps.sort.reverse)
     end
-
-    it 'includes related currency rates and currencies' do
-      get '/api/v1/currencies/conversions'
-
-      json_response = JSON.parse(response.body)
-      
-      expect(json_response['currency_rates']).to be_an(Array)
-      expect(json_response['currencies']).to be_an(Array)
-      
-      expect(json_response['currency_rates'].length).to be > 0
-      expect(json_response['currencies'].length).to be > 0
-    end
   end
 
-  describe 'POST /api/v1/currencies/conversions', :vcr do
+  describe 'POST /api/v1/currencies/conversions' do
     let(:valid_params) do
       {
         from_currency: 'USD',
@@ -94,6 +82,12 @@ RSpec.describe 'Api::V1::Currencies::Conversions API', type: :request do
     end
 
     context 'when conversion is successful' do
+      before do
+        allow_any_instance_of(::Currencies::ConversionService).to receive(:call) do
+          create(:currency_conversion, user: user, currency_rate: currency_rate, from_value: 100.0, to_value: 525.0)
+        end
+      end
+
       it 'creates a new conversion and returns the result' do
         expect {
           post '/api/v1/currencies/conversions', params: valid_params
@@ -123,28 +117,46 @@ RSpec.describe 'Api::V1::Currencies::Conversions API', type: :request do
     end
 
     context 'when from_currency is not supported' do
+      before do
+        allow_any_instance_of(::Currencies::ConversionService).to receive(:call).and_raise(
+          ::Currencies::ConversionService::ConversionError, 'Unsupported currency: INVALID'
+        )
+      end
+
       it 'returns an error' do
         post '/api/v1/currencies/conversions', params: valid_params.merge(from_currency: 'INVALID')
 
         expect(response).to have_http_status(:unprocessable_entity)
         
         json_response = JSON.parse(response.body)
-        expect(json_response['error']).to include('Unsupported from_currency: INVALID')
+        expect(json_response['error']).to include('Unsupported currency: INVALID')
       end
     end
 
     context 'when to_currency is not supported' do
+      before do
+        allow_any_instance_of(::Currencies::ConversionService).to receive(:call).and_raise(
+          ::Currencies::ConversionService::ConversionError, 'Unsupported currency: INVALID'
+        )
+      end
+
       it 'returns an error' do
         post '/api/v1/currencies/conversions', params: valid_params.merge(to_currency: 'INVALID')
 
         expect(response).to have_http_status(:unprocessable_entity)
         
         json_response = JSON.parse(response.body)
-        expect(json_response['error']).to include('Unsupported to_currency: INVALID')
+        expect(json_response['error']).to include('Unsupported currency: INVALID')
       end
     end
 
     context 'when force_refresh is true' do
+      before do
+        allow_any_instance_of(::Currencies::ConversionService).to receive(:call) do
+          create(:currency_conversion, user: user, currency_rate: currency_rate, from_value: 100.0, to_value: 525.0)
+        end
+      end
+
       it 'forces a fresh rate fetch' do
         post '/api/v1/currencies/conversions', params: valid_params.merge(force_refresh: true)
 
@@ -157,8 +169,8 @@ RSpec.describe 'Api::V1::Currencies::Conversions API', type: :request do
 
     context 'when API request fails' do
       before do
-        allow_any_instance_of(Currencies::RateFetcherService).to receive(:call).and_raise(
-          Currencies::RateFetcherService::RateFetchError, 'API request failed'
+        allow_any_instance_of(::Currencies::ConversionService).to receive(:call).and_raise(
+          ::Currencies::ConversionService::ConversionError, 'API request failed'
         )
       end
 

@@ -6,6 +6,10 @@ class ApplicationController < ActionController::API
 
   private
 
+  def authenticate_user!
+    render json: { error: 'Unauthorized' }, status: :unauthorized unless current_user
+  end
+
   def set_default_response_format
     request.format = :json
   end

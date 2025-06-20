@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
       resources :currencies, only: [:index] do
         collection do
-          resources :conversion, only: [:create]
+          resources :conversions, only: [:index, :create], controller: 'currencies/conversions'
         end
       end
 

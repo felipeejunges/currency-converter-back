@@ -8,6 +8,8 @@ SimpleCov.start do
   add_group 'Views', 'app/views'
   add_group 'Helpers', 'app/helpers'
   add_group 'Config', 'config'
+  add_group 'Services', 'app/services'
+  add_group 'Jobs', 'app/jobs'
   add_filter 'config/initializers'
   add_filter 'spec'
 end

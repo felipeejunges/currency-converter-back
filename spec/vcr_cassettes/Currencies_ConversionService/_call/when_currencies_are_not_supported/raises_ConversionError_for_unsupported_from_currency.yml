@@ -1,0 +1,57 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.currencyapi.com/v3/latest?apikey=<CURRENCY_API_KEY>&currencies=XXX,BRL
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Date:
+      - Thu, 19 Jun 2025 23:59:20 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      Cache-Control:
+      - no-cache, private
+      X-Request-Id:
+      - 273794b4-8e14-4995-8b10-7bebd40a1d9a
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Ratelimit-Limit-Quota-Minute:
+      - '10'
+      X-Ratelimit-Remaining-Quota-Minute:
+      - '10'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=GuIQm8OGAmgAen2iEwk6nHc9C%2FT2lJHo%2BrChKzg0iKo%2Fn45vm1KYzbRJNsrxCFZnr8cp4I7%2FREIWR3QtpBF7WXp1eSUoOV7I5fbWNKz4oyGSvqI%3D"}]}'
+      Cf-Ray:
+      - 9526fac2ad1cf22d-GRU
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"message":"Validation error","errors":{"currencies":["The selected
+        currencies is invalid."]},"info":"For more information, see documentation:
+        https:\/\/currencyapi.com\/docs\/status-codes#_422"}'
+  recorded_at: Thu, 19 Jun 2025 23:59:17 GMT
+recorded_with: VCR 6.3.1

@@ -1,0 +1,67 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.currencyapi.com/v3/latest?apikey=<CURRENCY_API_KEY>&currencies=USD,BRL
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 19 Jun 2025 23:56:09 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      Server:
+      - cloudflare
+      Charset:
+      - utf-8
+      X-Execution-Time:
+      - '10.58'
+      X-Cost:
+      - '1'
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit-Quota-Month:
+      - '300'
+      X-Ratelimit-Remaining-Quota-Month:
+      - '293'
+      X-Forwarded-Port:
+      - '443'
+      X-Request-Id:
+      - 895409e4-3e08-4970-865b-685fd8c46af2
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Ratelimit-Limit-Quota-Minute:
+      - '10'
+      X-Ratelimit-Remaining-Quota-Minute:
+      - '9'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=OnLtDglMXlOALkQK3WDfjiCwQ2NKq7jqU8XmbNy%2FXoTZAsaqXP%2Bfk4vmOMFkQshI%2FDa6SFwcHcqofPnFKQnu1LFpOYnb0%2BL2le%2FMpyJ1MRllj0g%3D"}]}'
+      Cf-Ray:
+      - 9526f61c6da1cb41-GIG
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"meta":{"last_updated_at":"2025-06-18T23:59:59Z"},"data":{"BRL":{"code":"BRL","value":5.4850509232},"USD":{"code":"USD","value":1}}}'
+  recorded_at: Thu, 19 Jun 2025 23:56:06 GMT
+recorded_with: VCR 6.3.1

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Currency
+module Currencies
   class ConversionService
     attr_reader :user, :from_currency, :to_currency, :from_value, :force_refresh
 
@@ -39,7 +39,23 @@ module Currency
       raise ConversionError, 'from_value must be greater than 0'
     end
 
+    def validate_supported_currencies!
+      unless from_currency.supported?
+        raise ConversionError, "Unsupported currency: #{from_currency.code}"
+      end
+
+      unless to_currency.supported?
+        raise ConversionError, "Unsupported currency: #{to_currency.code}"
+      end
+
+      if from_currency == to_currency
+        raise ConversionError, 'Cannot convert to the same currency'
+      end
+    end
+
     def fetch_currency_rate
+      validate_supported_currencies!
+      
       if force_refresh
         fetch_live_rate
       else
@@ -52,7 +68,7 @@ module Currency
     end
 
     def fetch_live_rate
-      Currency::RateFetcherService.new(
+      Currencies::RateFetcherService.new(
         from_currency: from_currency,
         to_currency: to_currency
       ).call

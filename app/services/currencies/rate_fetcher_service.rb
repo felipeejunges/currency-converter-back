@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Currency
+module Currencies
   class RateFetcherService
     include HTTParty
 

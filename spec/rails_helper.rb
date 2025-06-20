@@ -11,6 +11,7 @@ require 'rspec/rails'
 require 'shoulda-matchers'
 require 'vcr'
 require 'webmock/rspec'
+require 'database_cleaner/active_record'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -64,19 +65,19 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner[:active_record].strategy = :transaction
   end
 
   config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner[:active_record].strategy = :truncation
   end
 
   config.before(:each) do
-    DatabaseCleaner.start
+    DatabaseCleaner[:active_record].start
   end
 
   config.after(:each) do
-    DatabaseCleaner.clean
+    DatabaseCleaner[:active_record].clean
   end
 
   # RSpec Rails can automatically mix in different behaviours to your tests
@@ -98,4 +99,11 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.before(:each) do
+    Sidekiq::Testing.fake!
+  end
+
+  config.after(:each) do
+    Sidekiq::Worker.clear_all
+  end
 end

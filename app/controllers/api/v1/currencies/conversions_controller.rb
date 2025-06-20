@@ -15,6 +15,8 @@ module Api
             from_value: conversion_params[:from_value],
             force_refresh: conversion_params[:force_refresh] == 'true'
           ).call
+
+          render :create, status: :created, formats: [:json]
         rescue Currency::ConversionService::ConversionError => e
           render json: { error: e.message }, status: :unprocessable_entity
         rescue StandardError => e

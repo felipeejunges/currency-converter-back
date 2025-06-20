@@ -55,7 +55,7 @@ class Currency::Conversion < ApplicationRecord # rubocop:disable Style/ClassAndM
     created_at
   end
 
-    private
+  private
 
   def log_conversion
     Rails.logger.info(

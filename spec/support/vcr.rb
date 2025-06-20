@@ -13,7 +13,7 @@ VCR.configure do |config|
 
   config.default_cassette_options = {
     record: :once,
-    match_requests_on: [:method, :uri, :body]
+    match_requests_on: %i[method uri body]
   }
 
   config.before_record do |interaction|

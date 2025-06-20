@@ -12,22 +12,21 @@ class CurrencyRateFetcherJob < ApplicationJob
     combinations.each do |from_currency, to_currency|
       next if from_currency == to_currency
 
-      begin
-        Currencies::RateFetcherService.new(
-          from_currency: from_currency,
-          to_currency: to_currency
-        ).call
-
-        Rails.logger.info("Successfully fetched rate for #{from_currency.code} -> #{to_currency.code}")
-      rescue StandardError => e
-        Rails.logger.error("Failed to fetch rate for #{from_currency.code} -> #{to_currency.code}: #{e.message}")
-      end
+      fetch_rate(from_currency, to_currency)
     end
 
     Rails.logger.info('Completed currency rate fetching job')
   end
 
   private
+
+  def fetch_rate(from_currency, to_currency)
+    Currencies::RateFetcherService.new(from_currency: from_currency, to_currency: to_currency).call
+
+    Rails.logger.info("Successfully fetched rate for #{from_currency.code} -> #{to_currency.code}")
+  rescue StandardError => e
+    Rails.logger.error("Failed to fetch rate for #{from_currency.code} -> #{to_currency.code}: #{e.message}")
+  end
 
   def generate_currency_combinations(currencies)
     currencies.product(currencies).reject { |from, to| from == to }

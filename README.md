@@ -58,7 +58,7 @@ DB_USERNAME=postgres
 DB_PASSWORD=password
 
 # Redis Configuration
-REDIS_URL_SIDEKIQ=redis://redis:6379/1
+REDIS_URL_SIDEKIQ_CC=redis://redis:6379/1
 
 # CurrencyAPI.com Configuration
 CURRENCY_API_KEY=your_currency_api_key_here
@@ -116,7 +116,7 @@ The API includes comprehensive interactive documentation powered by RSwag and Sw
 
 ### Video Demonstration
 
-📹 **[Watch API Demo Video](https://www.loom.com/share/3f97cd13bf5143e385ad0a8f48fa936a)**
+📹 **[Watch Demo Video](https://www.loom.com/share/3f97cd13bf5143e385ad0a8f48fa936a)**
 
 A comprehensive walkthrough of the Currency Converter API features, including authentication, currency conversion, and the interactive Swagger documentation.
 
@@ -341,7 +341,7 @@ DB_USERNAME=postgres
 DB_PASSWORD=password
 
 # Redis Configuration
-REDIS_URL_SIDEKIQ=redis://redis:6379/1
+REDIS_URL_SIDEKIQ_CC=redis://redis:6379/1
 
 # CurrencyAPI.com Configuration
 CURRENCY_API_KEY=your_currency_api_key_here
@@ -421,8 +421,6 @@ All currency conversions are logged with details including:
 The project maintains comprehensive test coverage across all components including models, services, controllers, and background jobs.
 
 ## Next Steps
-
-### Planned Features
 
 - **Filters and Order for Conversion History**
   - Add filtering by date range, currency pairs, and amount ranges

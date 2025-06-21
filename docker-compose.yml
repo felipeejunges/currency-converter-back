@@ -27,19 +27,19 @@ services:
     command: bundle exec sidekiq -C ./config/sidekiq.yaml
     volumes:
       - '.:/currency-converter-back'
-      - .:/tmp/sidekiq'
+      - .:/tmp/sidekiq
       - shared_temp:/tmp/shared
     env_file:
       - .env
 
   server:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 4000 -b '0.0.0.0'"
     volumes:
       - '.:/currency-converter-back'
       - shared_temp:/tmp/shared
     ports:
-      - "3000:3000"
+      - "4000:4000"
     depends_on:
       - db
       - redis

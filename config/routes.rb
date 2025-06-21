@@ -3,9 +3,12 @@ require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  mount ActionCable.server => '/cable'
-  mount Sidekiq::Web => '/sidekiq'
+  
+  # Only mount Sidekiq web UI in development and test environments
+  unless Rails.env.production?
+    mount Sidekiq::Web => '/sidekiq'
+  end
+  
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
 

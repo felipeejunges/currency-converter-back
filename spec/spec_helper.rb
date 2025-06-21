@@ -8,6 +8,8 @@ SimpleCov.start do
   add_group 'Views', 'app/views'
   add_group 'Helpers', 'app/helpers'
   add_group 'Config', 'config'
+  add_group 'Services', 'app/services'
+  add_group 'Jobs', 'app/jobs'
   add_filter 'config/initializers'
   add_filter 'spec'
 end
@@ -104,7 +106,7 @@ RSpec.configure do |config|
   #   # as the one that triggered the failure.
   #   Kernel.srand config.seed
 
-  onfig.before(:suite) do
+  config.before(:suite) do
     DatabaseCleaner[:active_record].strategy = :truncation
     DatabaseCleaner.clean
   end

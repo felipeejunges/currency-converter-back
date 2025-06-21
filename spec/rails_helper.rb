@@ -3,7 +3,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 require 'sidekiq/testing'
-ENV['RAILS_ENV'] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
@@ -11,6 +11,7 @@ require 'rspec/rails'
 require 'shoulda-matchers'
 require 'vcr'
 require 'webmock/rspec'
+require 'database_cleaner/active_record'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -46,8 +47,8 @@ RSpec.configure do |config|
     end
   end
 
-  # Remove this line to enable support for ActiveRecord
-  config.use_active_record = false
+  # Enable ActiveRecord support
+  config.use_active_record = true
 
   # If you enable ActiveRecord support you should uncomment these lines,
   # note if you'd prefer not to run each example within a transaction, you
@@ -58,8 +59,30 @@ RSpec.configure do |config|
   ]
   config.use_transactional_fixtures = true
 
-  # You can uncomment this line to turn off ActiveRecord support entirely.
-  # config.use_active_record = false
+  # Configure DatabaseCleaner
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner[:active_record].strategy = :transaction
+  end
+
+  config.before(:each, js: true) do
+    DatabaseCleaner[:active_record].strategy = :truncation
+  end
+
+  config.before(:each) do
+    DatabaseCleaner[:active_record].start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner[:active_record].clean
+  end
+
+  # Include Devise test helpers
+  config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
@@ -80,4 +103,11 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.before(:each) do
+    Sidekiq::Testing.fake!
+  end
+
+  config.after(:each) do
+    Sidekiq::Worker.clear_all
+  end
 end

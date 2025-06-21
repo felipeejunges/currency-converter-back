@@ -8,7 +8,7 @@ module Api
       private
 
       def respond_with(resource, _opts = {})
-        render json: { user: { id: resource.id, email: resource.email, name: resource.name }, token: current_token }, status: :ok
+        render json: { user: { id: resource.id, email: resource.email, name: resource.full_name }, token: current_token }, status: :ok
       end
 
       def respond_to_on_destroy

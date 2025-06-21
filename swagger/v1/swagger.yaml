@@ -1,0 +1,451 @@
+---
+openapi: 3.0.1
+info:
+  title: Currency Converter API
+  description: A comprehensive API for currency conversion with real-time exchange
+    rates. Uses JSONAPI-style pagination with page[page] and page[limit] parameters.
+  version: v1
+paths:
+  "/api/v1/login":
+    post:
+      summary: login user
+      tags:
+      - Authentication
+      operationId: loginUser
+      parameters: []
+      responses:
+        '200':
+          description: successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    "$ref": "#/components/schemas/User"
+                  token:
+                    type: string
+                    description: JWT authentication token
+                    example: eyJhbGciOiJIUzI1NiJ9...
+                required:
+                - user
+                - token
+        '401':
+          description: unprocessable entity
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                      example: user@example.com
+                    password:
+                      type: string
+                      example: password123
+                  required:
+                  - email
+                  - password
+  "/api/v1/logout":
+    delete:
+      summary: logout user
+      tags:
+      - Authentication
+      operationId: logoutUser
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: successful logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logged out successfully.
+                required:
+                - message
+  "/api/v1/currencies/conversions":
+    get:
+      summary: list conversions
+      tags:
+      - Conversions
+      operationId: listConversions
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: page[page]
+        in: query
+        required: false
+        description: Page number for pagination
+        example: 1
+        schema:
+          type: integer
+      - name: page[limit]
+        in: query
+        required: false
+        description: Number of items per page
+        example: 20
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversions:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Conversion"
+                  pagination:
+                    "$ref": "#/components/schemas/Pagination"
+                required:
+                - conversions
+                - pagination
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    post:
+      summary: create conversion
+      tags:
+      - Conversions
+      operationId: createConversion
+      security:
+      - BearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: conversion created successfully
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Conversion"
+        '422':
+          description: invalid amount
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '500':
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                conversion:
+                  type: object
+                  properties:
+                    from_currency:
+                      type: string
+                      example: USD
+                      description: 3-letter currency code to convert from (BRL, USD,
+                        EUR, JPY)
+                    to_currency:
+                      type: string
+                      example: BRL
+                      description: 3-letter currency code to convert to (BRL, USD,
+                        EUR, JPY)
+                    from_value:
+                      type: number
+                      format: decimal
+                      example: 100.0
+                      description: Amount to convert (must be greater than 0)
+                    force_refresh:
+                      type: boolean
+                      example: false
+                      description: Force refresh of exchange rate (optional)
+                  required:
+                  - from_currency
+                  - to_currency
+                  - from_value
+  "/api/v1/currencies":
+    get:
+      summary: list currencies
+      tags:
+      - Currencies
+      operationId: listCurrencies
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currencies:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Currency"
+                required:
+                - currencies
+  "/api/v1/register":
+    post:
+      summary: create user registration
+      tags:
+      - Authentication
+      operationId: createUserRegistration
+      parameters: []
+      responses:
+        '201':
+          description: user created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    "$ref": "#/components/schemas/UserRegistration"
+                  message:
+                    type: string
+                    example: User registered successfully
+                required:
+                - user
+                - message
+        '422':
+          description: email already taken
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                      example: user@example.com
+                      description: Valid email address
+                    password:
+                      type: string
+                      example: password123
+                      description: Password (minimum 6 characters)
+                    password_confirmation:
+                      type: string
+                      example: password123
+                      description: Password confirmation (must match password)
+                    first_name:
+                      type: string
+                      example: John
+                      description: First name (2-50 characters)
+                    last_name:
+                      type: string
+                      example: Doe
+                      description: Last name (2-50 characters)
+                  required:
+                  - email
+                  - password
+                  - password_confirmation
+                  - first_name
+                  - last_name
+servers:
+- url: http://localhost:3000
+  description: Development server
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from login endpoint
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        name:
+          type: string
+          example: John Doe
+      required:
+      - id
+      - email
+      - name
+    UserRegistration:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        full_name:
+          type: string
+          example: John Doe
+      required:
+      - id
+      - email
+      - first_name
+      - last_name
+      - full_name
+    Currency:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: USD
+          description: 3-letter currency code
+        name:
+          type: string
+          example: US Dollar
+        symbol:
+          type: string
+          example: "$"
+        symbol_native:
+          type: string
+          example: "$"
+      required:
+      - id
+      - code
+      - name
+      - symbol
+      - symbol_native
+    Conversion:
+      type: object
+      properties:
+        transaction_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        from_currency:
+          type: string
+          example: USD
+        to_currency:
+          type: string
+          example: BRL
+        from_value:
+          type: string
+          example: '100.0'
+        to_value:
+          type: string
+          example: '525.0'
+        rate:
+          type: string
+          example: '5.25'
+        timestamp:
+          type: string
+          format: date-time
+          example: '2024-01-01T12:00:00Z'
+      required:
+      - transaction_id
+      - user_id
+      - from_currency
+      - to_currency
+      - from_value
+      - to_value
+      - rate
+      - timestamp
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Error message
+        details:
+          type: array
+          items:
+            type: string
+          example:
+          - Email is invalid
+          - Password is too short
+    Pagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 100
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        pages:
+          type: integer
+          example: 5
+        last:
+          type: integer
+          example: 5
+        next:
+          type:
+          - integer
+          - 'null'
+          example: 2
+        prev:
+          type:
+          - integer
+          - 'null'
+          example: 
+        from:
+          type: integer
+          example: 1
+        to:
+          type: integer
+          example: 20
+        vars:
+          type: object
+        series:
+          type: array
+          items:
+            type: string
+      description: Pagination metadata. Use page[page] and page[limit] query parameters
+        for pagination.
+tags:
+- name: Authentication
+  description: User authentication and registration endpoints
+- name: Currencies
+  description: Currency management and listing endpoints
+- name: Conversions
+  description: Currency conversion operations with JSONAPI-style pagination

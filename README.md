@@ -2,6 +2,12 @@
 
 A Ruby on Rails API for currency conversion using data from CurrencyAPI.
 
+## Frontend Application
+
+🌐 **[Currency Converter Frontend](https://github.com/felipeejunges/currency-converter-front)**
+
+This is the backend API for the Currency Converter application. For the complete user interface and frontend implementation, check out the React frontend repository.
+
 ## Features
 
 - Convert between supported currencies (BRL, USD, EUR, JPY)
@@ -107,6 +113,12 @@ The API includes comprehensive interactive documentation powered by RSwag and Sw
 ![Swagger API Documentation](https://github.com/user-attachments/assets/b1b643b3-088c-408e-bc9e-6e79f9ba64f4)
 
 **Access the documentation at:** `http://localhost:3000/api-docs`
+
+### Video Demonstration
+
+📹 **[Watch API Demo Video](https://www.loom.com/share/3f97cd13bf5143e385ad0a8f48fa936a)**
+
+A comprehensive walkthrough of the Currency Converter API features, including authentication, currency conversion, and the interactive Swagger documentation.
 
 ## API Endpoints
 
@@ -407,6 +419,38 @@ All currency conversions are logged with details including:
 ![Code Coverage](https://github.com/user-attachments/assets/1d12ba1b-206b-445b-8cfc-db1114a4a7ce)
 
 The project maintains comprehensive test coverage across all components including models, services, controllers, and background jobs.
+
+## Next Steps
+
+### Planned Features
+
+- **Filters and Order for Conversion History**
+  - Add filtering by date range, currency pairs, and amount ranges
+  - Implement sorting by date, amount, and exchange rate
+  - Add search functionality for conversion history
+
+- **Currency Price History (Daily)**
+  - Provide endpoints to retrieve historical data
+  - Add charts and analytics for currency trends
+  - Implement rate change notifications
+
+- **Real-time Exchange Rates**
+  - WebSocket support for live rate updates
+  - Push notifications for significant rate changes
+
+- **Multi-currency Support**
+  - Expand to support more currencies (GBP, CAD, AUD, etc.)
+  - Dynamic currency addition through admin interface
+
+- **Advanced Analytics**
+  - Conversion volume analytics
+  - User behavior insights
+  - Popular currency pair tracking
+
+- **API Rate Limiting & Caching**
+  - Implement rate limiting for API endpoints
+  - Add Redis caching for frequently accessed data
+  - Optimize response times
 
 ## License
 

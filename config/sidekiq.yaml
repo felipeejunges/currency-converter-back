@@ -4,10 +4,10 @@
   - high_priority
   - default
   - low_priority
-# :scheduler:
-#   :schedule:
-#     example_job:
-#       enabled: true
-#       cron: "0 1 * * *"
-#       queue: high_priority
-#       class: ExampleJob
+:scheduler:
+  :schedule:
+    currency_rate_fetcher_job:
+      enabled: true
+      cron: "0 0 * * *"
+      queue: high_priority
+      class: CurrencyRateFetcherJob

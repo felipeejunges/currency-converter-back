@@ -10,6 +10,7 @@ A Ruby on Rails API for currency conversion using data from CurrencyAPI.
 - Transaction history tracking
 - Optional live rate fetching
 - Comprehensive test coverage
+- **Interactive API Documentation with Swagger/OpenAPI**
 
 ## Supported Currencies
 
@@ -96,6 +97,16 @@ docker-compose up --build
 ```bash
 docker-compose exec server rails db:create db:migrate db:seed
 ```
+
+## API Documentation
+
+### Interactive Swagger Documentation
+
+The API includes comprehensive interactive documentation powered by RSwag and Swagger UI.
+
+![Swagger API Documentation](https://github.com/user-attachments/assets/b1b643b3-088c-408e-bc9e-6e79f9ba64f4)
+
+**Access the documentation at:** `http://localhost:3000/api-docs`
 
 ## API Endpoints
 
@@ -291,6 +302,16 @@ bundle exec rspec spec/controllers/
 bundle exec rspec spec/jobs/
 ```
 
+### Run RSwag documentation tests
+
+```bash
+# Run only the documentation tests
+bundle exec rspec spec/requests/
+
+# Generate documentation after running tests
+bundle exec rails rswag:specs:swaggerize
+```
+
 ## Configuration
 
 ### Environment Variables
@@ -335,8 +356,32 @@ The application uses CurrencyAPI for exchange rates. You need to:
 Sidekiq is configured in `config/sidekiq.yaml`:
 
 - Concurrency: 5
-- Queues: default, mailers, currency_rates
-- Scheduled jobs: CurrencyRateFetcherJob (daily at midnight)
+- Queues: high_priority, default, low_priority
+- Scheduled jobs: CurrencyRateFetcherJob (daily at midnight - 00:00)
+
+#### Scheduled Jobs
+
+The application uses `sidekiq-scheduler` to run background jobs on a schedule:
+
+```yaml
+# config/sidekiq.yaml
+:scheduler:
+  :schedule:
+    currency_rate_fetcher_job:
+      enabled: true
+      cron: "0 0 * * *"  # Run every day at midnight (00:00)
+      queue: high_priority
+      class: CurrencyRateFetcherJob
+```
+
+**Cron Format:** `"0 0 * * *"` means:
+- `0` - Minute (0-59)
+- `0` - Hour (0-23) 
+- `*` - Day of month (1-31)
+- `*` - Month (1-12)
+- `*` - Day of week (0-7, where 0 and 7 are Sunday)
+
+This runs the `CurrencyRateFetcherJob` every day at midnight to update all currency exchange rates.
 
 ## Error Handling
 

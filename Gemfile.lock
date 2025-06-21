@@ -159,6 +159,9 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     json (2.12.2)
+    json-schema (5.1.1)
+      addressable (~> 2.8)
+      bigdecimal (~> 3.1)
     jwt (2.10.1)
       base64
     kamal (2.6.1)
@@ -304,6 +307,11 @@ GEM
     rswag-api (2.16.0)
       activesupport (>= 5.2, < 8.1)
       railties (>= 5.2, < 8.1)
+    rswag-specs (2.16.0)
+      activesupport (>= 5.2, < 8.1)
+      json-schema (>= 2.2, < 6.0)
+      railties (>= 5.2, < 8.1)
+      rspec-core (>= 2.14)
     rswag-ui (2.16.0)
       actionpack (>= 5.2, < 8.1)
       railties (>= 5.2, < 8.1)
@@ -436,6 +444,7 @@ DEPENDENCIES
   rspec-rails
   rspec_junit_formatter
   rswag-api
+  rswag-specs
   rswag-ui
   rubocop-rails-omakase
   shoulda-matchers (~> 5.3)

@@ -117,13 +117,15 @@ jobs:
               -e DB_HOSTNAME=\"$DB_HOSTNAME\" \
               -e DB_USERNAME=\"$DB_USERNAME\" \
               -e DB_PASSWORD=\"$DB_PASSWORD\" \
-              -e REDIS_URL_SIDEKIQ_CC=\"${{ secrets.REDIS_URL_SIDEKIQ_CC }}\" \
-              \"${{ secrets.AWS_ECR_URL }}/currency-converter-back-server:latest\""
+              -e CURRENCY_API_KEY=\"$CURRENCY_API_KEY\" \
+              -e REDIS_URL_SIDEKIQ_CC=\"$REDIS_URL_SIDEKIQ_CC\" \
+              \"$AWS_ECR_URL/currency-converter-back-server:latest\""
 
             bash -c "docker run -d --name currency-converter-back-sidekiq \
               -e SECRET_KEY_BASE=\"$SECRET_KEY_BASE\" \
               -e DB_HOSTNAME=\"$DB_HOSTNAME\" \
               -e DB_USERNAME=\"$DB_USERNAME\" \
               -e DB_PASSWORD=\"$DB_PASSWORD\" \
-              -e REDIS_URL_SIDEKIQ_CC=\"${{ secrets.REDIS_URL_SIDEKIQ_CC }}\" \
-              \"${{ secrets.AWS_ECR_URL }}/currency-converter-back-sidekiq:latest\""
+              -e CURRENCY_API_KEY=\"$CURRENCY_API_KEY\" \
+              -e REDIS_URL_SIDEKIQ_CC=\"$REDIS_URL_SIDEKIQ_CC\" \
+              \"$AWS_ECR_URL/currency-converter-back-sidekiq:latest\""

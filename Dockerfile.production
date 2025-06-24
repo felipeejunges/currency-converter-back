@@ -1,0 +1,39 @@
+# syntax=docker/dockerfile:1
+FROM ruby:3.2.1
+RUN apt-get update -yq \
+    && apt-get -yq install curl gnupg ca-certificates \
+    && curl -L https://deb.nodesource.com/setup_16.x | bash
+RUN apt-get update -qq && apt-get install -y \
+    libffi-dev \
+    libc-dev \ 
+    libxml2-dev \
+    libxslt-dev \
+    libgcrypt-dev \
+    # nodejs \
+    openssl \
+    python3 \
+    tzdata
+    #daemonize
+WORKDIR /currency-converter-back
+COPY . /currency-converter-back
+COPY Gemfile /currency-converter-back/Gemfile
+COPY Gemfile.lock /currency-converter-back/Gemfile.lock
+
+
+#RUN daemonize /usr/bin/unshare --nfork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target
+
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development"
+
+RUN bundle install
+
+# Add a script to be executed every time the container starts.
+COPY entrypoint.production.sh /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+EXPOSE 4000
+
+# Configure the main process to run when running the image
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "4000"]

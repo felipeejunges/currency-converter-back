@@ -3,7 +3,7 @@ source "https://rubygems.org"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"
 # Use sqlite3 as the database for Active Record
-gem "sqlite3", ">= 2.1"
+gem 'pg', '~> 1.1'
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
@@ -16,9 +16,9 @@ gem "jbuilder"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
-gem "solid_queue"
-gem "solid_cable"
+# gem "solid_cache"
+# gem "solid_queue"
+# gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -44,6 +44,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  gem 'rspec-rails'
+  gem 'rswag-specs'
 end
 
 group :development do
@@ -55,7 +57,6 @@ group :test do
   gem 'factory_bot_rails'
   gem 'faker', '~> 3.2'
   gem 'rspec_junit_formatter'
-  gem 'rspec-rails'
   gem 'shoulda-matchers', '~> 5.3'
   gem 'simplecov', '~> 0.22.0'
   gem 'vcr', '~> 6.2'
@@ -64,4 +65,10 @@ end
 
 gem 'devise'
 gem 'devise-jwt'
+gem 'httparty'
 gem 'pagy', '~> 9.3'
+gem 'redis'
+gem 'rswag-api'
+gem 'rswag-ui'
+gem 'sidekiq', '~> 7.3'
+gem 'sidekiq-scheduler', '~> 5.0'

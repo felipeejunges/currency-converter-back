@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  sidekiq:
+    build: 
+      context: .
+      dockerfile: Dockerfile.production
+    command: bundle exec sidekiq -C ./config/sidekiq.yaml
+    volumes:
+      - '.:/currency-converter-back'
+      - .:/tmp/sidekiq
+    environment:
+      RAILS_ENV: production
+      SECRET_KEY_BASE: $SECRET_KEY_BASE
+      REDIS_URL_SIDEKIQ_CC: ${REDIS_URL_SIDEKIQ_CC}
+
+  server:
+    build: 
+      context: .
+      dockerfile: Dockerfile.production
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 4000 -b '0.0.0.0'"
+    volumes:
+      - .:/currency-converter-back
+    ports:
+      - "4000:4000"
+    environment:
+      RAILS_ENV: production
+      DB_HOSTNAME: "${DB_HOSTNAME}"
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      SECRET_KEY_BASE: "${SECRET_KEY_BASE}"
+      REDIS_URL_SIDEKIQ_CC: ${REDIS_URL_SIDEKIQ_CC}

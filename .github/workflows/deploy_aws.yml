@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - felipe-junges
 
 jobs:
   deploy:
@@ -40,25 +39,46 @@ jobs:
         run: |
           cp docker-compose.production.yml docker-compose.yml
 
-      # Step 6: Build the Docker images using docker-compose with no-cache
+      # Step 6: Build Docker images using docker-compose
       - name: Build Docker images
         run: |
           docker-compose build --no-cache
 
-      # Step 7: Tag Docker images for server and sidekiq only
+      # Step 7: Extract Rails routes and generate NGINX allowlist
+      - name: Generate NGINX allowed_routes.conf from Rails
+        run: |
+          docker compose run --rm currency-converter-back-server \
+            bash -c "RAILS_ENV=production bundle exec rails routes -o | \
+              awk '{print \$3}' | grep '^/' | sort | uniq | \
+              while read path; do
+                clean_path=\$(echo \"\$path\" | sed 's/:.*//')
+                echo \"location ^~ \$clean_path { proxy_pass http://localhost:4000; }\" >> allowed_routes.conf
+              done"
+
+      # Step 8: Tag Docker images for server and sidekiq
       - name: Tag Docker images
         run: |
           docker tag currency-converter-back-server:latest ${{ secrets.AWS_ECR_URL }}/currency-converter-back-server:latest
           docker tag currency-converter-back-sidekiq:latest ${{ secrets.AWS_ECR_URL }}/currency-converter-back-sidekiq:latest
           docker images
 
-      # Step 8: Push Docker images to ECR (server and sidekiq only)
+      # Step 9: Push Docker images to ECR
       - name: Push Docker images to ECR
         run: |
           docker push ${{ secrets.AWS_ECR_URL }}/currency-converter-back-server:latest
           docker push ${{ secrets.AWS_ECR_URL }}/currency-converter-back-sidekiq:latest
 
-      # Step 9: Deploy to EC2 instance via SSH
+      # Step 10: Upload NGINX allowed routes config to EC2
+      - name: Upload NGINX allowed_routes.conf to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "allowed_routes.conf"
+          target: "/home/${{ secrets.EC2_USER }}/allowed_routes.conf"
+
+      # Step 11: SSH into EC2 and Deploy
       - name: SSH into EC2 and Deploy
         uses: appleboy/ssh-action@v1.2.2
         env:
@@ -99,33 +119,39 @@ jobs:
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${{ secrets.AWS_ECR_URL }}"
 
             echo "Removing old images..."
-            docker rmi -f $(docker images -aq)
+            docker rmi -f $(docker images -aq) || true
 
             echo "Pulling the latest Docker images from ECR..."
             docker pull "${{ secrets.AWS_ECR_URL }}/currency-converter-back-server:latest"
             docker pull "${{ secrets.AWS_ECR_URL }}/currency-converter-back-sidekiq:latest"
 
-            echo "Stopping and removing any existing containers..."
+            echo "Stopping and removing existing containers..."
             docker stop currency-converter-back-server || true
             docker rm currency-converter-back-server || true
             docker stop currency-converter-back-sidekiq || true
             docker rm currency-converter-back-sidekiq || true
 
             echo "Running the new Docker containers..."
-            bash -c "docker run -d -p 4000:4000 --name currency-converter-back-server \
-              -e SECRET_KEY_BASE=\"$SECRET_KEY_BASE\" \
-              -e DB_HOSTNAME=\"$DB_HOSTNAME\" \
-              -e DB_USERNAME=\"$DB_USERNAME\" \
-              -e DB_PASSWORD=\"$DB_PASSWORD\" \
-              -e CURRENCY_API_KEY=\"$CURRENCY_API_KEY\" \
-              -e REDIS_URL_SIDEKIQ_CC=\"$REDIS_URL_SIDEKIQ_CC\" \
-              \"$AWS_ECR_URL/currency-converter-back-server:latest\""
+            docker run -d -p 4000:4000 --name currency-converter-back-server \
+              -e SECRET_KEY_BASE="$SECRET_KEY_BASE" \
+              -e DB_HOSTNAME="$DB_HOSTNAME" \
+              -e DB_USERNAME="$DB_USERNAME" \
+              -e DB_PASSWORD="$DB_PASSWORD" \
+              -e CURRENCY_API_KEY="$CURRENCY_API_KEY" \
+              -e REDIS_URL_SIDEKIQ_CC="$REDIS_URL_SIDEKIQ_CC" \
+              "${AWS_ECR_URL}/currency-converter-back-server:latest"
 
-            bash -c "docker run -d --name currency-converter-back-sidekiq \
-              -e SECRET_KEY_BASE=\"$SECRET_KEY_BASE\" \
-              -e DB_HOSTNAME=\"$DB_HOSTNAME\" \
-              -e DB_USERNAME=\"$DB_USERNAME\" \
-              -e DB_PASSWORD=\"$DB_PASSWORD\" \
-              -e CURRENCY_API_KEY=\"$CURRENCY_API_KEY\" \
-              -e REDIS_URL_SIDEKIQ_CC=\"$REDIS_URL_SIDEKIQ_CC\" \
-              \"$AWS_ECR_URL/currency-converter-back-sidekiq:latest\""
+            docker run -d --name currency-converter-back-sidekiq \
+              -e SECRET_KEY_BASE="$SECRET_KEY_BASE" \
+              -e DB_HOSTNAME="$DB_HOSTNAME" \
+              -e DB_USERNAME="$DB_USERNAME" \
+              -e DB_PASSWORD="$DB_PASSWORD" \
+              -e CURRENCY_API_KEY="$CURRENCY_API_KEY" \
+              -e REDIS_URL_SIDEKIQ_CC="$REDIS_URL_SIDEKIQ_CC" \
+              "${AWS_ECR_URL}/currency-converter-back-sidekiq:latest"
+
+            echo "Placing allowed_routes.conf into NGINX config..."
+            sudo mv /home/${{ secrets.EC2_USER }}/allowed_routes.conf /etc/nginx/conf.d/currency-converter-back-allowed_routes.conf
+
+            echo "Testing and reloading NGINX..."
+            sudo nginx -t && sudo systemctl reload nginx

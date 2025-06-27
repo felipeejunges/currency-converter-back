@@ -130,26 +130,26 @@ jobs:
               -e REDIS_URL_SIDEKIQ_CC=\"$REDIS_URL_SIDEKIQ_CC\" \
               \"$AWS_ECR_URL/currency-converter-back-sidekiq:latest\""
 
-            echo "Generating allowed_routes.conf inside running container..."
-            container_id=$(docker ps -q -f name=currency-converter-back-server)
+            # echo "Generating allowed_routes.conf inside running container..."
+            # container_id=$(docker ps -q -f name=currency-converter-back-server)
 
-            docker exec $container_id bash -c "
-              RAILS_ENV=production bundle exec rails routes -o | \
-              awk '{print \$3}' | grep '^/' | grep -v '^/rails/' | sort | uniq | \
-              while read path; do
-                clean_path=\$(echo \"\$path\" | sed 's/(\\.:format)//; s/:.*//')
-                echo \"location ^~ \$clean_path {
-                  proxy_pass http://localhost:4000;
-                  proxy_set_header Host \\\$host;
-                  proxy_set_header X-Real-IP \\\$remote_addr;
-                  proxy_set_header X-Forwarded-For \\\$proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto \\\$scheme;
-                }\"
-              done > allowed_routes.conf
-            "
-            docker cp $container_id:/currency-converter-back/allowed_routes.conf ./currency-converter-back-allowed_routes.conf
-            sudo mv ./currency-converter-back-allowed_routes.conf /etc/nginx/currency-converter-back-allowed_routes.conf
+            # docker exec $container_id bash -c "
+            #   RAILS_ENV=production bundle exec rails routes -o | \
+            #   awk '{print \$3}' | grep '^/' | grep -v '^/rails/' | sort | uniq | \
+            #   while read path; do
+            #     clean_path=\$(echo \"\$path\" | sed 's/(\\.:format)//; s/:.*//')
+            #     echo \"location ^~ \$clean_path {
+            #       proxy_pass http://localhost:4000;
+            #       proxy_set_header Host \\\$host;
+            #       proxy_set_header X-Real-IP \\\$remote_addr;
+            #       proxy_set_header X-Forwarded-For \\\$proxy_add_x_forwarded_for;
+            #       proxy_set_header X-Forwarded-Proto \\\$scheme;
+            #     }\"
+            #   done > allowed_routes.conf
+            # "
+            # docker cp $container_id:/currency-converter-back/allowed_routes.conf ./currency-converter-back-allowed_routes.conf
+            # sudo mv ./currency-converter-back-allowed_routes.conf /etc/nginx/currency-converter-back-allowed_routes.conf
 
-            echo "Restarting Nginx..."
-            sudo nginx -t                                                                  
-            sudo systemctl reload nginx
+            # echo "Restarting Nginx..."
+            # sudo nginx -t                                                                  
+            # sudo systemctl reload nginx

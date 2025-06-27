@@ -40,7 +40,7 @@ module Api
             from_currency: Currency.find_by_code(conversion_params[:from_currency]),
             to_currency: Currency.find_by_code(conversion_params[:to_currency]),
             from_value: conversion_params[:from_value],
-            force_refresh: conversion_params[:force_refresh] == 'true'
+            force_refresh: false #conversion_params[:force_refresh] == 'true'
           )
         end
       end

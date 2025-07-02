@@ -55,7 +55,7 @@ end
 group :test do
   gem 'database_cleaner', '~> 2.0'
   gem 'factory_bot_rails'
-  gem 'faker', '~> 3.2'
+  gem 'faker', '~> 3.5'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 5.3'
   gem 'simplecov', '~> 0.22.0'

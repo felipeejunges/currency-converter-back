@@ -66,7 +66,7 @@ end
 gem 'devise'
 gem 'devise-jwt'
 gem 'httparty'
-gem 'pagy', '~> 9.3'
+gem 'pagy', '~> 9.4'
 gem 'redis'
 gem 'rswag-api'
 gem 'rswag-ui'

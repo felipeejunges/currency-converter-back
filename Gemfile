@@ -57,7 +57,7 @@ group :test do
   gem 'factory_bot_rails'
   gem 'faker', '~> 3.2'
   gem 'rspec_junit_formatter'
-  gem 'shoulda-matchers', '~> 5.3'
+  gem 'shoulda-matchers', '~> 6.5'
   gem 'simplecov', '~> 0.22.0'
   gem 'vcr', '~> 6.2'
   gem 'webmock', '~> 3.19'
